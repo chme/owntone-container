@@ -94,7 +94,6 @@ RUN \
     ffmpeg \
     gnutls \
     json-c \
-    libevent \
     libgcrypt \
     libplist \
     libsodium \
