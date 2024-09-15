@@ -17,6 +17,7 @@ RUN \
     automake \
     avahi-dev \
     bison \
+    cmake \
     confuse-dev \
     curl-dev \
     ffmpeg-dev \
@@ -29,7 +30,6 @@ RUN \
     gnutls-dev \
     gperf \
     json-c-dev \
-    libevent-dev \
     libgcrypt-dev \
     libplist-dev \
     libsodium-dev \
@@ -41,6 +41,15 @@ RUN \
     npm \
     protobuf-c-dev \
     sqlite-dev && \
+  mkdir -p /tmp/libevent && \
+  cd /tmp/libevent && \
+  git clone https://github.com/libevent/libevent.git ./ && \
+  mkdir -p build && \
+  cd build && \
+  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr .. && \
+  make && \
+  make -s DESTDIR=/tmp/build install && \
+  cd /tmp/source && \
   git clone -b ${REPOSITORY_BRANCH} ${REPOSITORY_URL} ./ && \
   if [ ${REPOSITORY_COMMIT} ]; then git checkout ${REPOSITORY_COMMIT}; \
   elif [ ${REPOSITORY_VERSION} ]; then git checkout tags/${REPOSITORY_VERSION}; fi && \
@@ -48,6 +57,9 @@ RUN \
   npm install -s --no-progress && \
   npm run -s build -- -l silent && \
   cd .. && \
+  export PKG_CONFIG_PATH=/tmp/build/usr/lib/pkgconfig && \
+  export CPPFLAGS='-I/tmp/build/usr/include' && \
+  export LDFLAGS='-L/tmp/build/usr/lib' && \
   autoreconf -i && \
   ./configure \
     -q \
