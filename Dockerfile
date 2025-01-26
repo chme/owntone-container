@@ -53,10 +53,6 @@ RUN \
   git clone -b ${REPOSITORY_BRANCH} ${REPOSITORY_URL} ./ && \
   if [ ${REPOSITORY_COMMIT} ]; then git checkout ${REPOSITORY_COMMIT}; \
   elif [ ${REPOSITORY_VERSION} ]; then git checkout tags/${REPOSITORY_VERSION}; fi && \
-  cd web-src && \
-  npm install -s --no-progress && \
-  npm run -s build -- -l silent && \
-  cd .. && \
   export PKG_CONFIG_PATH=/tmp/build/usr/lib/pkgconfig && \
   export CPPFLAGS='-I/tmp/build/usr/include' && \
   export LDFLAGS='-L/tmp/build/usr/lib' && \
